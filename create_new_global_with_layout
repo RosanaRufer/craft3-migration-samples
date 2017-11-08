@@ -1,0 +1,73 @@
+<?php
+
+namespace craft\contentmigrations;
+
+use Craft;
+use craft\db\Migration;
+use craft\elements\GlobalSet;
+use craft\fields\PlainText;
+use craft\models\FieldLayoutTab;
+use craft\models\FieldLayout;
+
+/**
+ * create_new_global_with_layout.
+ */
+class create_new_global_with_layout extends Migration
+{
+    /**
+     * @inheritdoc
+     */
+    public function safeUp()
+    {
+        //-------------------------------------
+        // You should fill in these variables:
+        //-------------------------------------
+        $name = "New variable name";
+        $handle = "newVariableHandle";
+        $fieldHandle = "existingFieldHandle";
+        //-------------------------------------
+        
+        // Create new GlobalSet
+        $globalSet = new GlobalSet();
+
+        // Set name and handle
+        $globalSet->name = $name;
+        $globalSet->handle = $handle;
+
+        // Build field layout
+        $tabs = [];
+        $fields = [];
+
+        $field = Craft::$app->getFields()->getFieldByHandle($fieldHandle);
+        $field->required = false;
+        $fields[] = $field;
+
+        $tab = new FieldLayoutTab();
+        $tab->name = "Tab 1";
+        $tab->sortOrder = 0;
+        $tab->setFields($fields);
+        $tabs[] = $tab;
+
+        $layout = new FieldLayout();
+        $layout->setTabs($tabs);
+        $layout->setFields($fields);
+
+        // Set the field layout
+        $layout->type = GlobalSet::class;
+        $globalSet->fieldLayout = $layout;
+
+        // Save it
+        if (!Craft::$app->getGlobals()->saveSet($globalSet)) {
+            Craft::$app->getSession()->setError(Craft::t('app', 'Couldn’t save global set.'));
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function safeDown()
+    {
+        echo "create_new_global_with_layout cannot be reverted.\n";
+        return false;
+    }
+}
