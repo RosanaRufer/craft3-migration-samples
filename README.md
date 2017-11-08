@@ -12,4 +12,4 @@
 
 #### Global variable
 
-- [**Create** new global variable with a field layout based on existing fields]()
+- [**Create** new global variable with a field layout based on existing fields](/create_new_global_with_layout)
